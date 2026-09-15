@@ -1,8 +1,20 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus, Github, GitBranch, Star, GitFork, CircleDot, Trash2, Pencil } from "lucide-react";
-import { repositoriesApi, projectsApi } from "@/services/api";
+import {
+  Plus,
+  Github,
+  GitBranch,
+  Star,
+  GitFork,
+  CircleDot,
+  Trash2,
+  Pencil,
+  ShieldCheck,
+  Unplug,
+  ExternalLink,
+} from "lucide-react";
+import { repositoriesApi, projectsApi, githubApi } from "@/services/api";
 import { useToast } from "@/components/ui/Toast";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
@@ -12,6 +24,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { ConfirmDialog } from "@/components/ui/Modal";
 import { RepositoryFormModal } from "@/features/repositories/RepositoryFormModal";
 import { fromNow } from "@/utils/format";
+import { initials } from "@/utils/format";
 
 export function GitHubPage() {
   const [projectFilter, setProjectFilter] = useState("all");
@@ -21,6 +34,7 @@ export function GitHubPage() {
 
   const toast = useToast();
   const queryClient = useQueryClient();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["repositories", { projectId: projectFilter }],
@@ -30,6 +44,22 @@ export function GitHubPage() {
   const projectsQuery = useQuery({
     queryKey: ["projects", {}],
     queryFn: () => projectsApi.list(),
+  });
+
+  const githubQuery = useQuery({
+    queryKey: ["githubStatus"],
+    queryFn: githubApi.status,
+    retry: false,
+    staleTime: 30_000,
+  });
+
+  const disconnectMutation = useMutation({
+    mutationFn: githubApi.disconnect,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["githubStatus"] });
+      toast.success("GitHub account disconnected");
+    },
+    onError: (err) => toast.error(err.message || "Failed to disconnect GitHub"),
   });
 
   const deleteMutation = useMutation({
@@ -47,6 +77,24 @@ export function GitHubPage() {
   const projects = projectsQuery.data?.projects ?? [];
   const synced = repos.filter((r) => r.source === "github").length;
 
+  const linked = searchParams.get("linked") === "1";
+  const linkError = searchParams.get("link_error");
+
+  useEffect(() => {
+    if (!linked && !linkError) return;
+    if (linked) {
+      queryClient.invalidateQueries({ queryKey: ["githubStatus"] });
+      toast.success("GitHub account connected");
+    } else if (linkError) {
+      toast.error(linkError || "Could not connect your GitHub account");
+    }
+    setSearchParams({}, { replace: true });
+  }, [linked, linkError, setSearchParams, queryClient, toast]);
+
+  const github = githubQuery.data?.github;
+  const githubConnected = github?.connected === true;
+  const notConfigured = githubQuery.isError && String(githubQuery.error?.message ?? "").includes("not configured");
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -62,6 +110,70 @@ export function GitHubPage() {
           Connect repository
         </Button>
       </div>
+
+      <section className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-edge bg-surface p-4">
+        <div className="flex items-center gap-3 min-w-0">
+          {githubConnected ? (
+            github.avatarUrl ? (
+              <img src={github.avatarUrl} alt="" className="h-10 w-10 shrink-0 rounded-full border border-edge" />
+            ) : (
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-edge bg-surface-2 text-xs font-semibold text-ink-secondary">
+                {initials(github.login)}
+              </div>
+            )
+          ) : (
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-edge-strong bg-surface-2">
+              <Github className="h-5 w-5 text-accent" aria-hidden />
+            </div>
+          )}
+          <div className="min-w-0">
+            <p className="flex items-center gap-2 text-sm font-semibold text-ink">
+              GitHub connection
+              {githubConnected && (
+                <Badge tone="success" className="gap-1 normal-case">
+                  <ShieldCheck className="h-3 w-3" aria-hidden /> read-only
+                </Badge>
+              )}
+            </p>
+            <p className="truncate text-xs text-ink-muted">
+              {githubConnected
+                ? `Signed in as ${github.login} · scopes: ${github.scopes || "public_repo"}`
+                : notConfigured
+                  ? "Server is missing GITHUB_CLIENT_ID / GITHUB_CLIENT_SECRET."
+                  : "Link your GitHub account to sync live repository data with a read-only token."}
+            </p>
+          </div>
+        </div>
+
+        {githubConnected ? (
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              leftIcon={<ExternalLink className="h-4 w-4" aria-hidden />}
+              onClick={() => githubApi.authorize()}
+            >
+              Reconnect
+            </Button>
+            <Button
+              variant="ghost"
+              leftIcon={<Unplug className="h-4 w-4" aria-hidden />}
+              loading={disconnectMutation.isPending}
+              onClick={() => disconnectMutation.mutate()}
+            >
+              Disconnect
+            </Button>
+          </div>
+        ) : (
+          <Button
+            variant="primary"
+            leftIcon={<Github className="h-4 w-4" aria-hidden />}
+            disabled={notConfigured}
+            onClick={() => githubApi.authorize()}
+          >
+            {notConfigured ? "OAuth not configured" : "Connect GitHub account"}
+          </Button>
+        )}
+      </section>
 
       <div className="mt-5">
         <Select value={projectFilter} onChange={(e) => setProjectFilter(e.target.value)} aria-label="Filter by project" className="w-52">

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { repositoriesApi, projectsApi } from "@/services/api";
+import { Github, Search } from "lucide-react";
+import { repositoriesApi, projectsApi, githubApi } from "@/services/api";
 import { useToast } from "@/components/ui/Toast";
 import { Modal } from "@/components/ui/Modal";
 import { Field } from "@/components/ui/Field";
@@ -37,6 +38,23 @@ export function RepositoryFormModal({ open, onClose, repository, defaultProjectI
 
   const [form, setForm] = useState(initial);
   const [error, setError] = useState("");
+  const [browseOpen, setBrowseOpen] = useState(false);
+  const [repoFilter, setRepoFilter] = useState("");
+
+  const githubQuery = useQuery({
+    queryKey: ["githubStatus"],
+    queryFn: githubApi.status,
+    retry: false,
+    staleTime: 30_000,
+  });
+
+  const browseQuery = useQuery({
+    queryKey: ["githubRepos"],
+    queryFn: githubApi.repos,
+    enabled: browseOpen,
+    retry: false,
+    staleTime: 60_000,
+  });
 
   useEffect(() => {
     if (!open) return;
@@ -90,6 +108,26 @@ export function RepositoryFormModal({ open, onClose, repository, defaultProjectI
   };
 
   const projects = data?.projects ?? [];
+  const githubConnected = githubQuery.data?.github?.connected === true;
+  const browseRepos = browseQuery.data?.repositories ?? [];
+  const filteredRepos = browseRepos.filter((r) =>
+    !repoFilter || r.fullName.toLowerCase().includes(repoFilter.toLowerCase()),
+  );
+
+  const pickRepo = (r) => {
+    setForm((f) => ({
+      ...f,
+      owner: r.owner,
+      name: r.name,
+      url: r.htmlUrl || f.url,
+      branch: r.defaultBranch || f.branch,
+      description: r.description || f.description,
+      visibility: r.visibility || f.visibility,
+      sync: !isEdit,
+    }));
+    setBrowseOpen(false);
+    setRepoFilter("");
+  };
 
   return (
     <Modal
@@ -101,12 +139,67 @@ export function RepositoryFormModal({ open, onClose, repository, defaultProjectI
     >
       <form onSubmit={handleSubmit} className="grid gap-4 sm:grid-cols-2">
         {!isEdit && (
-          <div className="flex items-center justify-between rounded-md border border-edge bg-surface-2 px-3 py-2.5 sm:col-span-2">
-            <div>
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-edge bg-surface-2 px-3 py-2.5 sm:col-span-2">
+            <div className="min-w-0">
               <p className="text-xs font-medium text-ink">Sync metadata from GitHub</p>
-              <p className="text-[11px] text-ink-muted">Fill stars, forks, issues and last commit automatically (demo).</p>
+              <p className="text-[11px] text-ink-muted">
+                {githubConnected
+                  ? "Fill stars, forks, issues and last commit automatically with your connected GitHub account."
+                  : "Fill stars, forks, issues and last commit automatically (demo — connect GitHub for live data)."}
+              </p>
             </div>
-            <Switch checked={form.sync} onChange={(v) => set("sync", v)} aria-label="Sync from GitHub" />
+            <div className="flex items-center gap-2">
+              {githubConnected && (
+                <Button type="button" variant="ghost" size="sm" leftIcon={<Github className="h-3.5 w-3.5" aria-hidden />} onClick={() => setBrowseOpen((v) => !v)}>
+                  {browseOpen ? "Close picker" : "Pick from my repos"}
+                </Button>
+              )}
+              <Switch checked={form.sync} onChange={(v) => set("sync", v)} aria-label="Sync from GitHub" />
+            </div>
+          </div>
+        )}
+
+        {browseOpen && (
+          <div className="sm:col-span-2">
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-ink-muted" aria-hidden />
+              <Input
+                value={repoFilter}
+                onChange={(e) => setRepoFilter(e.target.value)}
+                placeholder="Filter repositories…"
+                className="pl-8"
+                autoFocus
+              />
+            </div>
+            <div className="mt-2 max-h-56 overflow-auto rounded-md border border-edge">
+              {browseQuery.isError ? (
+                <p className="px-3 py-4 text-center text-xs text-ink-muted">
+                  {browseQuery.error?.message || "Could not load your repositories."}
+                </p>
+              ) : browseQuery.isLoading ? (
+                <p className="px-3 py-4 text-center text-xs text-ink-muted">Loading your repositories…</p>
+              ) : filteredRepos.length === 0 ? (
+                <p className="px-3 py-4 text-center text-xs text-ink-muted">No repositories match.</p>
+              ) : (
+                <ul>
+                  {filteredRepos.map((r) => (
+                    <li key={r.fullName}>
+                      <button
+                        type="button"
+                        onClick={() => pickRepo(r)}
+                        className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left transition-colors hover:bg-surface-2 btn-focus"
+                      >
+                        <span className="min-w-0">
+                          <span className="block truncate text-xs font-medium text-ink">{r.owner}/{r.name}</span>
+                          {r.description && <span className="block truncate text-[11px] text-ink-muted">{r.description}</span>}
+                        </span>
+                        <span className="shrink-0 font-mono text-[10px] text-ink-muted">{r.defaultBranch}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </div>
         )}
 

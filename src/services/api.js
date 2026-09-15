@@ -138,3 +138,14 @@ export const searchApi = {
 export const aiApi = {
   ask: (message, projectId) => api.post("/api/ai/ask", { message, projectId }),
 };
+
+// ---------- GitHub ----------
+
+export const githubApi = {
+  authorize: () => {
+    window.location.href = "/api/github/authorize";
+  },
+  status: () => api.get("/api/github/status"),
+  repos: () => api.get("/api/github/repos"),
+  disconnect: () => api.post("/api/github/disconnect"),
+};
