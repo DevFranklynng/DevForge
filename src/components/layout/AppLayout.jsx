@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Topbar } from "@/components/layout/Topbar";
 import { CommandPalette } from "@/components/layout/CommandPalette";
@@ -15,12 +15,17 @@ export function AppLayout() {
   const isTablet = useMediaQuery("(min-width: 768px)");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [hoverExpanded, setHoverExpanded] = useState(false);
 
-  const collapsed = Boolean(isTablet && !isDesktop);
+  const collapsed = isTablet && !(isDesktop && hoverExpanded);
 
   useEffect(() => {
     if (isDesktop) setMobileOpen(false);
   }, [isDesktop]);
+
+  useEffect(() => {
+    setHoverExpanded(false);
+  }, [location.pathname]);
 
   useHotkey("mod+k", () => setSearchOpen((v) => !v));
 
@@ -31,7 +36,12 @@ export function AppLayout() {
   const shell = useMemo(
     () => (
       <div className="flex min-h-screen bg-canvas text-ink">
-        <Sidebar collapsed={collapsed} mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
+        <Sidebar
+          collapsed={collapsed}
+          mobileOpen={mobileOpen}
+          onClose={() => setMobileOpen(false)}
+          onHoverChange={setHoverExpanded}
+        />
         <div className="flex min-w-0 flex-1 flex-col">
           <Topbar onMenuClick={() => setMobileOpen(true)} onOpenSearch={() => setSearchOpen(true)} />
           <main className="flex-1 overflow-x-hidden">
@@ -41,7 +51,7 @@ export function AppLayout() {
         <CommandPalette open={searchOpen} onClose={() => setSearchOpen(false)} />
       </div>
     ),
-    [collapsed, mobileOpen, searchOpen],
+    [collapsed, mobileOpen, searchOpen, setHoverExpanded],
   );
 
   if (status === "loading") {

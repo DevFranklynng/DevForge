@@ -84,7 +84,7 @@ function NavLinkItem({ item, collapsed, onNavigate }) {
   );
 }
 
-export function Sidebar({ collapsed, mobileOpen, onClose }) {
+export function Sidebar({ collapsed, mobileOpen, onClose, onHoverChange }) {
   const { user } = useAuth();
 
   return (
@@ -99,10 +99,11 @@ export function Sidebar({ collapsed, mobileOpen, onClose }) {
 
       <aside
         aria-label="Primary navigation"
+        onMouseEnter={() => onHoverChange?.(true)}
+        onMouseLeave={() => onHoverChange?.(false)}
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-edge bg-surface transition-transform lg:static lg:translate-x-0 lg:bg-transparent lg:border-r lg:border-edge",
-          "md:w-20 md:items-stretch",
-          collapsed && "md:w-20",
+          "fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-edge bg-surface transition-[width,transform] duration-200 lg:static lg:translate-x-0 lg:bg-transparent",
+          collapsed ? "md:w-20 md:items-stretch" : "lg:w-64",
           mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
         )}
       >
