@@ -1,0 +1,123 @@
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --canvas: 10 12 15;
+    --surface: 18 21 26;
+    --surface-2: 23 27 33;
+    --surface-3: 30 35 43;
+    --edge: 37 43 52;
+    --edge-strong: 53 62 74;
+    --ink: 231 234 239;
+    --ink-secondary: 160 168 180;
+    --ink-muted: 108 116 128;
+    --accent: 52 211 153;
+    --accent-strong: 16 185 129;
+    --accent-soft: 52 211 153;
+    --success: 52 211 153;
+    --success-soft: 52 211 153;
+    --warning: 245 158 11;
+    --warning-soft: 245 158 11;
+    --danger: 251 113 133;
+    --danger-soft: 251 113 133;
+    --info: 56 189 248;
+    --info-soft: 56 189 248;
+    color-scheme: dark;
+  }
+
+  .light {
+    --canvas: 247 248 250;
+    --surface: 255 255 255;
+    --surface-2: 249 250 251;
+    --surface-3: 243 244 246;
+    --edge: 226 230 236;
+    --edge-strong: 203 209 219;
+    --ink: 23 27 33;
+    --ink-secondary: 71 78 90;
+    --ink-muted: 132 140 152;
+    --accent: 5 150 105;
+    --accent-strong: 4 120 87;
+    --accent-soft: 209 250 229;
+    --success: 5 150 105;
+    --success-soft: 209 250 229;
+    --warning: 180 83 9;
+    --warning-soft: 254 243 199;
+    --danger: 190 18 60;
+    --danger-soft: 255 228 230;
+    --info: 3 105 161;
+    --info-soft: 224 242 254;
+    color-scheme: light;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-canvas text-ink font-sans antialiased;
+    font-size: 14px;
+    line-height: 1.55;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: rgb(var(--accent) / 0.25);
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(var(--edge-strong)) transparent;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--edge-strong));
+    border-radius: 6px;
+    border: 2px solid rgb(var(--canvas));
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--accent) / 0.7);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  .font-mono-num {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .card {
+    @apply rounded-lg border border-edge bg-surface;
+  }
+
+  .card-hover {
+    @apply transition-colors hover:border-edge-strong;
+  }
+
+  .btn-focus {
+    @apply focus-visible:outline-2 focus-visible:outline-accent/70 focus-visible:outline-offset-2;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
