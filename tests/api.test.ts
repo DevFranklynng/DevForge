@@ -8,7 +8,7 @@ const failures: string[] = [];
 
 async function request(
   path: string,
-  opts: { method?: string; token?: string; body?: unknown } = {},
+  opts: { method?: string; token?: string; body?: unknown; redirect?: RequestRedirect } = {},
 ) {
   const headers: Record<string, string> = {};
   if (opts.body !== undefined) headers["content-type"] = "application/json";
@@ -17,6 +17,7 @@ async function request(
     method: opts.method ?? (opts.body !== undefined ? "POST" : "GET"),
     headers,
     body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
+    redirect: opts.redirect ?? "follow",
   });
   let json: unknown = null;
   const text = await res.text();
@@ -27,7 +28,7 @@ async function request(
       json = text;
     }
   }
-  return { status: res.status, json, setCookie: res.headers.get("set-cookie") ?? undefined };
+  return { status: res.status, json, setCookie: res.headers.get("set-cookie") ?? undefined, location: res.headers.get("location") ?? undefined };
 }
 
 function check(name: string, cond: boolean, detail?: unknown) {
@@ -171,6 +172,32 @@ async function main() {
   }
   const unread = await request("/api/notifications/unread-count", { token: demo });
   check("unread count returns number", typeof (unread.json as { count?: number }).count === "number", unread.json);
+
+  // --- GitHub integration ---
+  const ghStatus = await request("/api/github/status", { token: demo });
+  const gh = ghStatus.json as { github?: { connected?: boolean } };
+  check("github status returns connection state", ghStatus.status === 200 && typeof gh.github?.connected === "boolean", gh);
+
+  const ghAuthorize = await request("/api/github/authorize", { token: demo, redirect: "manual" });
+  const notConfiguredMsg = String((ghAuthorize.json as { error?: string })?.error ?? "").toLowerCase();
+  if (ghAuthorize.status === 302) {
+    check("github authorize redirects to GitHub sign-in", (ghAuthorize.location ?? "").startsWith("https://github.com/login/oauth/authorize"), ghAuthorize.location);
+  } else {
+    check(
+      "github authorize handled when unconfigured (400)",
+      record(400, ghAuthorize.status) && notConfiguredMsg.includes("not configured"),
+      ghAuthorize.json,
+    );
+  }
+
+  const ghReposAuth = await request("/api/github/repos");
+  check("github repos requires auth (401)", record(401, ghReposAuth.status), ghReposAuth.status);
+
+  const ghDisconnect = await request("/api/github/disconnect", { token: demo, method: "POST" });
+  check("github disconnect succeeds without a connection", record(200, ghDisconnect.status), ghDisconnect.json);
+
+  const ghCallback = await request("/api/github/callback?code=invalid&state=bogus", { redirect: "manual" });
+  check("github callback is public and redirects on bad state", record(302, ghCallback.status), ghCallback.status);
 
   console.log(`\n${passed} passed, ${failed} failed`);
   if (failed > 0) {

@@ -15,7 +15,7 @@ A professional developer command center for projects, tasks, repositories, deplo
 - **Projects**: full lifecycle (planning → active → maintenance → archived), priorities, progress, tech stack, tabs for tasks, repository, deployments, API docs, and activity.
 - **Tasks**: kanban board + list views, filters (status/priority/assignee/project), drag-free status moves, inline CRUD.
 - **Deployments**: live-status polling, git + non-git deploys, cancel action.
-- **Repositories**: connect and track git remotes.
+- **Repositories**: connect and track git remotes; real per-user GitHub OAuth (read-only `public_repo` scope, token encrypted at rest) with a "pick from my repos" browser and live sync. Without a connection, repositories fall back to manual/demo metadata.
 - **API docs**: endpoints grouped by project, methods, status, expandable request/response details.
 - **Activity**: grouped timeline with load-more.
 - **Notifications**: reconciled from due-soon tasks and failing deployments, unread badge, mark read/unread, read-all.
@@ -73,6 +73,14 @@ The API suite (`tests/api.test.ts`) is a plain tsx script that exercises the run
 npm run dev:server   # in one terminal
 npm run test:api     # in another
 ```
+
+## GitHub OAuth (optional)
+
+1. Create a GitHub OAuth app at <https://github.com/settings/developers>.
+2. Set the **Authorization callback URL** to `GITHUB_REDIRECT_URI` (default `http://localhost:4000/api/github/callback`, or `https://api.example.com/api/github/callback` in production).
+3. In `.env`: `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` (optionally override `GITHUB_REDIRECT_URI` / `GITHUB_APP_ORIGIN`). A shared `GITHUB_TOKEN` alone still enables live sync without OAuth.
+
+Each user links their own account from **Repositories → Connect GitHub account**. The access token is read-only (`public_repo`), stored AES-256-GCM encrypted at rest with a key derived from `SESSION_SECRET`, and never reaches the client. Keep `SESSION_SECRET` stable across restarts in production or users must reconnect.
 
 ## Development notes
 
