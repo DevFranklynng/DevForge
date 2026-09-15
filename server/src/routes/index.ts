@@ -13,6 +13,7 @@ import * as settings from "../controllers/settings.controller.js";
 import * as dashboard from "../controllers/dashboard.controller.js";
 import * as search from "../controllers/search.controller.js";
 import * as ai from "../controllers/ai.controller.js";
+import * as github from "../controllers/github.controller.js";
 
 const router = Router();
 
@@ -83,5 +84,12 @@ router.post("/notifications/read-all", requireAuth, notification.markAllRead);
 router.get("/search", requireAuth, search.globalSearch);
 
 router.post("/ai/ask", requireAuth, validate({ body: ai.aiAskSchema }), ai.ask);
+
+router.get("/github/authorize", requireAuth, github.authorize);
+// callback is intentionally public: GitHub redirects here straight from OAuth and the state param authenticates the user.
+router.get("/github/callback", github.callback);
+router.get("/github/status", requireAuth, github.status);
+router.get("/github/repos", requireAuth, github.repos);
+router.post("/github/disconnect", requireAuth, github.disconnect);
 
 export default router;

@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { z } from "zod";
 import { prisma } from "../lib/prisma.js";
 import { logActivity } from "../services/activity.js";
-import { syncGitHubRepo } from "../services/github.js";
+import { syncGitHubRepo, getUserToken } from "../services/github.js";
 import { asyncHandler, NotFoundError } from "../utils/http.js";
 
 export const repoSchema = z.object({
@@ -72,7 +72,8 @@ export const connectRepository = asyncHandler(async (req: Request, res: Response
     url: data.url ?? null,
   };
 
-  const synced = data.sync ? await syncGitHubRepo(payload) : null;
+  const token = await getUserToken(req.userId!);
+  const synced = data.sync ? await syncGitHubRepo(payload, token) : null;
 
   const repository = await prisma.repository.create({
     data: {

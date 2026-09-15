@@ -29,6 +29,8 @@ function readBool(name: string, fallback: boolean): boolean {
 
 const isProd = process.env.NODE_ENV === "production";
 
+const clientOrigin = read("CLIENT_ORIGIN", "http://localhost:5173");
+
 const sessionSecret = read("SESSION_SECRET", "");
 if (!sessionSecret && !isProd) {
   const generated = randomBytes(32).toString("hex");
@@ -40,7 +42,7 @@ const env = {
   isProd,
   port: Number(read("PORT", "4000")),
   apiUrl: read("API_URL", "http://localhost:4000"),
-  clientOrigin: read("CLIENT_ORIGIN", "http://localhost:5173"),
+  clientOrigin,
   databaseUrl: read("DATABASE_URL", "file:./devforge.db"),
   sessionSecret: sessionSecret || process.env.DEVFORGE_EPHEMERAL_SECRET!,
   sessionTtlDays: Number(read("SESSION_TTL_DAYS", "30")),
@@ -50,6 +52,8 @@ const env = {
   githubToken: read("GITHUB_TOKEN", ""),
   githubClientId: read("GITHUB_CLIENT_ID", ""),
   githubClientSecret: read("GITHUB_CLIENT_SECRET", ""),
+  githubRedirectUri: read("GITHUB_REDIRECT_URI", "http://localhost:4000/api/github/callback"),
+  githubAppOrigin: read("GITHUB_APP_ORIGIN", clientOrigin),
   deployProvider: read("DEPLOY_PROVIDER", ""),
   aiProvider: read("AI_PROVIDER", ""),
   openaiApiKey: read("OPENAI_API_KEY", ""),
