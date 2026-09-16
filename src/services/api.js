@@ -13,6 +13,14 @@ export const authApi = {
   changePassword: (data) => api.post("/api/auth/password", data),
 };
 
+// ---------- Google (OAuth) ----------
+
+export const googleApi = {
+  authorize: () => {
+    window.location.href = `${api.baseUrl}/api/auth/google`;
+  },
+};
+
 // ---------- Settings ----------
 
 export const settingsApi = {
@@ -143,7 +151,7 @@ export const aiApi = {
 
 export const githubApi = {
   authorize: () => {
-    window.location.href = "/api/github/authorize";
+    window.location.href = `${api.baseUrl}/api/github/authorize`;
   },
   status: () => api.get("/api/github/status"),
   repos: () => api.get("/api/github/repos"),

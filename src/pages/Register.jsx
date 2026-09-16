@@ -1,18 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Hammer } from "lucide-react";
 import { useAuth } from "@/features/auth/auth-context";
+import { GoogleButton } from "@/features/auth/GoogleButton";
 import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
 import { Input } from "@/components/ui/Input";
 
 export function Register() {
-  const { register } = useAuth();
+  const { status, register } = useAuth();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ name: "", email: "", password: "", confirm: "" });
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [status, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -112,6 +119,14 @@ export function Register() {
           {submitting ? "Creating account…" : "Create account"}
         </Button>
       </form>
+
+      <div className="my-4 flex items-center gap-3 text-[11px] text-ink-muted">
+        <span className="h-px flex-1 bg-edge" />
+        or
+        <span className="h-px flex-1 bg-edge" />
+      </div>
+
+      <GoogleButton label="Sign up with Google" />
 
       <p className="mt-5 text-center text-xs text-ink-muted">
         Already have an account?{" "}
