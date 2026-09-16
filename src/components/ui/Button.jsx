@@ -4,7 +4,7 @@ import { cn } from "@/lib/cn";
 
 const variants = {
   primary:
-    "bg-accent-strong text-white border border-accent-strong hover:bg-accent/90 hover:border-accent focus-visible:outline-accent disabled:hover:bg-accent-strong",
+    "bg-accent-strong text-white border border-accent-strong hover:bg-accent-strong/85 hover:border-accent focus-visible:outline-accent disabled:hover:bg-accent-strong",
   secondary: "bg-surface-2 text-ink border border-edge hover:border-edge-strong hover:bg-surface-3",
   ghost: "bg-transparent text-ink-secondary border border-transparent hover:text-ink hover:bg-surface-2",
   outline: "bg-transparent text-ink border border-edge-strong hover:border-accent/60 hover:text-ink",

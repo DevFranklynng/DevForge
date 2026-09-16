@@ -231,18 +231,18 @@ export function Tasks() {
       {view === "list" && tasks.length > 0 && (
         <ul className="mt-5 divide-y divide-edge/60 rounded-lg border border-edge bg-surface">
           {tasks.map((task) => (
-            <li key={task.id} className="flex items-center gap-3 px-4 py-3">
+            <li key={task.id} className="flex flex-wrap items-center gap-3 px-4 py-3">
               <TaskStatusBadge status={task.status} />
-              <div className="min-w-0 flex-1">
+              <div className="min-w-0 flex-1 basis-full sm:basis-auto">
                 <p className="truncate text-sm text-ink">{task.title}</p>
                 {task.project && <p className="text-[11px] text-ink-muted">{task.project.name}</p>}
               </div>
               <PriorityBadge priority={task.priority} />
-              {task.dueDate && <span className="text-[11px] text-ink-muted">{formatDate(task.dueDate)}</span>}
+              {task.dueDate && <span className="hidden text-[11px] text-ink-muted sm:inline">{formatDate(task.dueDate)}</span>}
               <Select
                 value={task.status}
                 aria-label={`Move ${task.title}`}
-                className="h-7 w-[130px] text-[11px]"
+                className="h-7 w-full sm:w-[130px]"
                 onChange={(e) => statusMutation.mutate({ id: task.id, status: e.target.value })}
               >
                 {TASK_STATUSES.map((s) => (

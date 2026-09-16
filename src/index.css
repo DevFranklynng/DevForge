@@ -11,50 +11,50 @@
 
 @layer base {
   :root {
-    --canvas: 10 12 15;
-    --surface: 18 21 26;
-    --surface-2: 23 27 33;
-    --surface-3: 30 35 43;
-    --edge: 37 43 52;
-    --edge-strong: 53 62 74;
-    --ink: 231 234 239;
-    --ink-secondary: 160 168 180;
-    --ink-muted: 108 116 128;
-    --accent: 52 211 153;
-    --accent-strong: 16 185 129;
-    --accent-soft: 52 211 153;
-    --success: 52 211 153;
-    --success-soft: 52 211 153;
-    --warning: 245 158 11;
-    --warning-soft: 245 158 11;
-    --danger: 251 113 133;
-    --danger-soft: 251 113 133;
-    --info: 56 189 248;
-    --info-soft: 56 189 248;
+    --canvas: 13 11 9;
+    --surface: 21 18 14;
+    --surface-2: 29 25 19;
+    --surface-3: 39 33 26;
+    --edge: 47 40 31;
+    --edge-strong: 68 58 45;
+    --ink: 242 236 224;
+    --ink-secondary: 186 174 154;
+    --ink-muted: 128 118 101;
+    --accent: 199 131 54;
+    --accent-strong: 150 92 30;
+    --accent-soft: 255 216 166;
+    --success: 121 178 133;
+    --success-soft: 46 78 56;
+    --warning: 235 172 64;
+    --warning-soft: 95 69 20;
+    --danger: 236 122 116;
+    --danger-soft: 92 42 44;
+    --info: 123 172 224;
+    --info-soft: 24 57 83;
     color-scheme: dark;
   }
 
   .light {
-    --canvas: 247 248 250;
-    --surface: 255 255 255;
-    --surface-2: 249 250 251;
-    --surface-3: 243 244 246;
-    --edge: 226 230 236;
-    --edge-strong: 203 209 219;
-    --ink: 23 27 33;
-    --ink-secondary: 71 78 90;
-    --ink-muted: 132 140 152;
-    --accent: 5 150 105;
-    --accent-strong: 4 120 87;
-    --accent-soft: 209 250 229;
-    --success: 5 150 105;
-    --success-soft: 209 250 229;
-    --warning: 180 83 9;
-    --warning-soft: 254 243 199;
-    --danger: 190 18 60;
-    --danger-soft: 255 228 230;
-    --info: 3 105 161;
-    --info-soft: 224 242 254;
+    --canvas: 248 245 239;
+    --surface: 255 253 249;
+    --surface-2: 249 245 238;
+    --surface-3: 242 237 228;
+    --edge: 226 218 205;
+    --edge-strong: 199 188 169;
+    --ink: 29 24 18;
+    --ink-secondary: 88 78 63;
+    --ink-muted: 141 129 111;
+    --accent: 155 92 24;
+    --accent-strong: 126 68 14;
+    --accent-soft: 249 236 214;
+    --success: 52 110 74;
+    --success-soft: 226 240 229;
+    --warning: 156 93 8;
+    --warning-soft: 250 241 214;
+    --danger: 176 43 47;
+    --danger-soft: 252 228 229;
+    --info: 30 92 139;
+    --info-soft: 225 240 248;
     color-scheme: light;
   }
 
