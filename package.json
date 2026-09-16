@@ -5,20 +5,14 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "concurrently -k -n server,client -c yellow,cyan \"npm:dev:server\" \"npm:dev:client\"",
-    "dev:server": "npm --prefix server run dev",
+    "dev": "vite",
     "dev:client": "vite",
-    "build": "npm run build:server && npm run build:client",
-    "build:server": "npm --prefix server run build",
+    "build": "vite build",
     "build:client": "vite build",
-    "start": "cross-env NODE_ENV=production node server/dist/index.js",
-    "preview": "vite preview",
-    "db:generate": "npm --prefix server run db:generate",
-    "db:push": "npm --prefix server run db:push",
-    "db:migrate": "npm --prefix server run db:migrate",
-    "db:seed": "npm --prefix server run db:seed",
-    "typecheck": "tsc --noEmit -p server/tsconfig.json",
-    "test:api": "npm --prefix server run test:api"
+    "preview": "vite preview"
+  },
+  "allowScripts": {
+    "esbuild": true
   },
   "dependencies": {
     "@fontsource/inter": "^5.1.1",
@@ -37,11 +31,8 @@
     "@types/react-dom": "^18.3.5",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
-    "concurrently": "^9.1.0",
-    "cross-env": "^7.0.3",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5.7.2",
     "vite": "^5.4.11"
   }
 }

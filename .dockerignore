@@ -1,8 +1,0 @@
-node_modules
-dist
-server/dist
-server/node_modules
-.env
-*.log
-.git
-.devforge-db

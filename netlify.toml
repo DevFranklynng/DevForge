@@ -1,5 +1,5 @@
 # Netlify deployment for the DevForge client (static build only).
-# The API runs separately (see render.yaml) and is reachable through
+# The API runs separately from the DevForge-Api repo and is reachable through
 # VITE_API_URL, injected at build time. SPA routing is handled by _redirects.
 [build]
   command = "npm run build:client"
