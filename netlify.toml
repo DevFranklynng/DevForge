@@ -7,6 +7,10 @@
 
 [build.environment]
   NODE_VERSION = "20"
+  # The deployed API origin. If your Render URL differs (or was set in the
+  # Netlify dashboard under Site settings > Environment variables, which
+  # overrides this file), update it here to match.
+  VITE_API_URL = "https://devforge-api.onrender.com"
 
 # No external/hosted API proxying: Netlify 200-rewrites cannot proxy to
 # external origins, so the client talks to the API origin directly.
