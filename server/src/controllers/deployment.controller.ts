@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { z } from "zod";
 import { prisma } from "../lib/prisma.js";
 import { createSimulatedDeployment } from "../services/deployment.js";
+import { broadcastResource } from "../services/events.js";
 import { asyncHandler, BadRequestError, NotFoundError } from "../utils/http.js";
 
 const deploymentListSchema = z.object({
@@ -61,6 +62,7 @@ export const createDeployment = asyncHandler(async (req: Request, res: Response)
   });
 
   res.status(202).json({ deployment });
+  broadcastResource(req.userId!, "deployments");
 });
 
 export const getDeployment = asyncHandler(async (req: Request, res: Response) => {
@@ -85,4 +87,5 @@ export const cancelDeployment = asyncHandler(async (req: Request, res: Response)
   });
 
   res.json({ deployment: updated });
+  broadcastResource(req.userId!, "deployments");
 });

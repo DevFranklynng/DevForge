@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "../lib/prisma.js";
 import { isOf, PROJECT_PRIORITIES, PROJECT_STATUSES } from "../models/domain.js";
 import { logActivity } from "../services/activity.js";
+import { broadcastResource } from "../services/events.js";
 import { asyncHandler, BadRequestError, NotFoundError } from "../utils/http.js";
 import { jsonParse, jsonStringify } from "../utils/format.js";
 
@@ -144,6 +145,7 @@ export const createProject = asyncHandler(async (req: Request, res: Response) =>
   });
 
   res.status(201).json({ project });
+  broadcastResource(req.userId!, "projects");
 });
 
 export const updateProject = asyncHandler(async (req: Request, res: Response) => {
@@ -187,6 +189,7 @@ export const updateProject = asyncHandler(async (req: Request, res: Response) =>
   });
 
   res.json({ project });
+  broadcastResource(req.userId!, "projects");
 });
 
 export const deleteProject = asyncHandler(async (req: Request, res: Response) => {
@@ -206,4 +209,5 @@ export const deleteProject = asyncHandler(async (req: Request, res: Response) =>
   });
 
   res.json({ ok: true });
+  broadcastResource(req.userId!, "projects");
 });

@@ -6,6 +6,7 @@ import { CommandPalette } from "@/components/layout/CommandPalette";
 import { useAuth } from "@/features/auth/auth-context";
 import { useHotkey } from "@/hooks/useHotkey";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useLiveSync } from "@/hooks/useLiveSync";
 
 export function AppLayout() {
   const { status } = useAuth();
@@ -16,6 +17,8 @@ export function AppLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [hoverExpanded, setHoverExpanded] = useState(false);
+
+  useLiveSync();
 
   const collapsed = isTablet && !(isDesktop && hoverExpanded);
 

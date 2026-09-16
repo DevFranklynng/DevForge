@@ -2,6 +2,7 @@ import type { Request, Response } from "express";
 import { z } from "zod";
 import { prisma } from "../lib/prisma.js";
 import { logActivity } from "../services/activity.js";
+import { broadcastResource } from "../services/events.js";
 import { asyncHandler, NotFoundError } from "../utils/http.js";
 
 export const settingsSchema = z.object({
@@ -22,6 +23,7 @@ export const getSettings = asyncHandler(async (req: Request, res: Response) => {
     });
   }
   res.json({ settings });
+  broadcastResource(req.userId!, "settings");
 });
 
 export const updateSettings = asyncHandler(async (req: Request, res: Response) => {
@@ -42,4 +44,5 @@ export const updateSettings = asyncHandler(async (req: Request, res: Response) =
   }
 
   res.json({ settings });
+  broadcastResource(req.userId!, "settings");
 });

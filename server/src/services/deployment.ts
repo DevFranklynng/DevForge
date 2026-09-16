@@ -2,6 +2,7 @@ import env from "../config/env.js";
 import { prisma } from "../lib/prisma.js";
 import { logActivity } from "./activity.js";
 import { createNotification, wantsDeploymentNotifications } from "./notification.js";
+import { broadcastResource } from "./events.js";
 
 export const SHAS = [
   "a3f9c21e0d",
@@ -93,6 +94,10 @@ export async function createSimulatedDeployment(
         finishedAt,
       },
     });
+
+    broadcastResource(userId, "deployments");
+    broadcastResource(userId, "activity");
+    broadcastResource(userId, "notifications");
 
     if (finalStatus === "success") {
       await logActivity({

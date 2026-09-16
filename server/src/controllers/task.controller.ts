@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "../lib/prisma.js";
 import { isOf, TASK_PRIORITIES, TASK_STATUSES } from "../models/domain.js";
 import { logActivity } from "../services/activity.js";
+import { broadcastResource } from "../services/events.js";
 import { asyncHandler, BadRequestError, NotFoundError } from "../utils/http.js";
 
 export const taskSchema = z.object({
@@ -132,6 +133,7 @@ export const createTask = asyncHandler(async (req: Request, res: Response) => {
   });
 
   res.status(201).json({ task: taskView(task) });
+  broadcastResource(req.userId!, "tasks");
 });
 
 export const updateTask = asyncHandler(async (req: Request, res: Response) => {
@@ -207,6 +209,7 @@ export const updateTask = asyncHandler(async (req: Request, res: Response) => {
   }
 
   res.json({ task: taskView(task) });
+  broadcastResource(req.userId!, "tasks");
 });
 
 export const deleteTask = asyncHandler(async (req: Request, res: Response) => {
@@ -228,4 +231,5 @@ export const deleteTask = asyncHandler(async (req: Request, res: Response) => {
   });
 
   res.json({ ok: true });
+  broadcastResource(req.userId!, "tasks");
 });

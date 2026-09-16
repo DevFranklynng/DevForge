@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "../lib/prisma.js";
 import { logActivity } from "../services/activity.js";
 import { syncGitHubRepo, getUserToken } from "../services/github.js";
+import { broadcastResource } from "../services/events.js";
 import { asyncHandler, NotFoundError } from "../utils/http.js";
 
 export const repoSchema = z.object({
@@ -99,6 +100,7 @@ export const connectRepository = asyncHandler(async (req: Request, res: Response
   });
 
   res.status(201).json({ repository });
+  broadcastResource(req.userId!, "repositories");
 });
 
 export const updateRepository = asyncHandler(async (req: Request, res: Response) => {
@@ -137,6 +139,7 @@ export const updateRepository = asyncHandler(async (req: Request, res: Response)
   });
 
   res.json({ repository });
+  broadcastResource(req.userId!, "repositories");
 });
 
 export const deleteRepository = asyncHandler(async (req: Request, res: Response) => {
@@ -157,4 +160,5 @@ export const deleteRepository = asyncHandler(async (req: Request, res: Response)
   });
 
   res.json({ ok: true });
+  broadcastResource(req.userId!, "repositories");
 });
