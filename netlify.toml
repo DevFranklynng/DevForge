@@ -1,0 +1,12 @@
+# Netlify deployment for the DevForge client (static build only).
+# The API runs separately (see render.yaml) and is reachable through
+# VITE_API_URL, injected at build time. SPA routing is handled by _redirects.
+[build]
+  command = "npm run build:client"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# No external/hosted API proxying: Netlify 200-rewrites cannot proxy to
+# external origins, so the client talks to the API origin directly.

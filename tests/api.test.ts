@@ -199,6 +199,60 @@ async function main() {
   const ghCallback = await request("/api/github/callback?code=invalid&state=bogus", { redirect: "manual" });
   check("github callback is public and redirects on bad state", record(302, ghCallback.status), ghCallback.status);
 
+  // --- Google (OAuth) ---
+  const googleAuthorize = await request("/api/auth/google", { redirect: "manual" });
+  if (googleAuthorize.status === 302) {
+    const whereTo = googleAuthorize.location ?? "";
+    if (whereTo.includes("accounts.google.com")) {
+      check("google authorize redirects to Google", true, googleAuthorize.location);
+    } else {
+      check(
+        "google authorize redirects to login with error when unconfigured",
+        whereTo.includes("/login") && whereTo.includes("google_error"),
+        whereTo,
+      );
+    }
+  } else {
+    const googleErr = String((googleAuthorize.json as { error?: string })?.error ?? "").toLowerCase();
+    check(
+      "google authorize handled when unconfigured (400)",
+      record(400, googleAuthorize.status) && googleErr.includes("not configured"),
+      googleAuthorize.json,
+    );
+  }
+
+  const googleCallback = await request("/api/auth/google/callback?code=invalid&state=bogus", { redirect: "manual" });
+  check(
+    "google callback is public and redirects on bad state",
+    record(302, googleCallback.status) && (googleCallback.location ?? "").includes("/login"),
+    googleCallback.location,
+  );
+
+  // --- Live events (SSE) ---
+  const eventsUnauth = await request("/api/events");
+  check("events requires auth (401)", record(401, eventsUnauth.status), eventsUnauth.status);
+
+  const ac = new AbortController();
+  const timer = setTimeout(() => ac.abort(), 2000);
+  try {
+    const evtRes = await fetch(`${BASE}/api/events`, {
+      headers: { cookie: demo },
+      redirect: "manual",
+      signal: ac.signal,
+    });
+    const contentType = evtRes.headers.get("content-type") ?? "";
+    check(
+      "events stream opens for authenticated user",
+      record(200, evtRes.status) && contentType.includes("text/event-stream"),
+      { status: evtRes.status, contentType },
+    );
+    evtRes.body?.cancel();
+  } catch (err) {
+    check("events stream opens for authenticated user", false, String(err));
+  } finally {
+    clearTimeout(timer);
+  }
+
   console.log(`\n${passed} passed, ${failed} failed`);
   if (failed > 0) {
     console.error("Failures:", failures.join(", "));

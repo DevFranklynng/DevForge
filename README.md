@@ -10,7 +10,8 @@ A professional developer command center for projects, tasks, repositories, deplo
 
 ## Features
 
-- **Auth**: register, login, logout, session management, protected routes. Demo account: `demo@devforge.dev` / `devforge123`.
+- **Auth**: register, login, logout, session management, protected routes. Google sign-up/sign-in (optional OAuth). Demo account: `demo@devforge.dev` / `devforge123`.
+- **Live updates**: a Server-Sent Events stream (`/api/events`) keeps every open tab in sync — create/edit/delete anywhere is reflected immediately, no refresh needed.
 - **Dashboard**: overview stat cards, project pulse, focus tasks, recent deployments, activity feed.
 - **Projects**: full lifecycle (planning → active → maintenance → archived), priorities, progress, tech stack, tabs for tasks, repository, deployments, API docs, and activity.
 - **Tasks**: kanban board + list views, filters (status/priority/assignee/project), drag-free status moves, inline CRUD.
@@ -81,6 +82,30 @@ npm run test:api     # in another
 3. In `.env`: `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` (optionally override `GITHUB_REDIRECT_URI` / `GITHUB_APP_ORIGIN`). A shared `GITHUB_TOKEN` alone still enables live sync without OAuth.
 
 Each user links their own account from **Repositories → Connect GitHub account**. The access token is read-only (`public_repo`), stored AES-256-GCM encrypted at rest with a key derived from `SESSION_SECRET`, and never reaches the client. Keep `SESSION_SECRET` stable across restarts in production or users must reconnect.
+
+## Google sign-in (optional)
+
+1. Create an OAuth 2.0 Client ID at <https://console.cloud.google.com/apis/credentials>.
+2. Add `GOOGLE_REDIRECT_URI` (default `http://localhost:4000/api/auth/google/callback`) to the client's **Authorized redirect URIs**, and make sure the OAuth consent screen includes the `userinfo.email` / `openid` scopes.
+3. In `.env`: `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` (optionally override `GOOGLE_REDIRECT_URI` / `GOOGLE_APP_ORIGIN`).
+
+Users then get **Continue with Google** on both the login and register screens. Sign-in links by verified email when an account already exists, otherwise it creates one. When Google is not configured the button redirects back to login with a clear error.
+
+## Deployment
+
+Two pieces are published separately:
+
+- **Client** — a static build (`npm run build:client`) deployed to any static host (Netlify, Vercel, Cloudflare Pages, etc.). `public/_redirects` + `netlify.toml` provide the SPA fallback. The client talks to the API via a build-time `VITE_API_URL`; leave it empty in dev so Vite proxies to `:4000`.
+- **API** — the Express server (`npm run build:server` → `server/dist`). It needs a persistent disk for SQLite (or a managed PostgreSQL via `DATABASE_URL`). `render.yaml` is a ready-made blueprint (disk at `/data`, auto-runs `prisma db push`); a Dockerfile with a `/data` volume is included for other providers.
+
+Cross-origin notes (client and API on different domains):
+
+- Set `CLIENT_ORIGIN` to the client's public origin(s) and `API_URL`/`VITE_API_URL` to the API's public URL.
+- Cookies must cross `COOKIE_SECURE=true` **and** `COOKIE_SAME_SITE=none` (both are already honored by the server).
+- If you keep the API behind the same domain as the client (e.g. `api.example.com`), `COOKIE_SECURE=true` with `COOKIE_SAME_SITE=lax` works and is simpler. Netlify is not able to 200-rewrite to an external origin, so do not rely on it for proxying the API.
+- `SESSION_SECRET` must be a stable random value in production (changing it invalidates existing sessions and GitHub/GitHub-encryption keys).
+
+The live event stream is in-process by design; it fits the single-instance deployment above. If you scale the API to multiple instances, swap `server/src/services/events.ts` for a Redis pub/sub.
 
 ## Development notes
 

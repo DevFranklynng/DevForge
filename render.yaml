@@ -1,0 +1,61 @@
+# DevForge API — Render blueprint.
+# Deploys the Express/Prisma backend as a web service. SQLite data lives on a
+# persistent disk at /data (survives restarts; cleared only on delete/recreate).
+# The static client deploys separately to Netlify (see netlify.toml).
+services:
+  - type: web
+    name: devforge-api
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: .
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 4000
+      - key: DATABASE_URL
+        value: file:/data/devforge.db
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: COOKIE_SAME_SITE
+        value: none
+      - key: DEMO_MODE
+        value: "false"
+      - key: CLIENT_ORIGIN
+        value: https://devforge.netlify.app
+      - key: API_URL
+        value: https://devforge-api.onrender.com
+      # GitHub OAuth (optional): register an app and set these.
+      - key: GITHUB_CLIENT_ID
+        sync: false
+      - key: GITHUB_CLIENT_SECRET
+        sync: false
+      - key: GITHUB_REDIRECT_URI
+        value: https://devforge-api.onrender.com/api/github/callback
+      - key: GITHUB_APP_ORIGIN
+        value: https://devforge.netlify.app
+      # Google OAuth (optional): register a Google OAuth client and set these.
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI
+        value: https://devforge-api.onrender.com/api/auth/google/callback
+      - key: GOOGLE_APP_ORIGIN
+        value: https://devforge.netlify.app
+      # AI: leave AI_PROVIDER empty to use the built-in demo engine, or set
+      # AI_PROVIDER=openai-aicompat with OPENAI_API_KEY / OPENAI_BASE_URL / OPENAI_MODEL.
+      - key: AI_PROVIDER
+        sync: false
+      - key: OPENAI_API_KEY
+        sync: false
+    buildCommand: npm install && npm --prefix server install && npm run build:server
+    preDeployCommand: npm --prefix server exec prisma db push
+    startCommand: npm start
+    disk:
+      name: devforge-data
+      mountPath: /data
+      sizeGB: 1
