@@ -192,7 +192,7 @@ export class DemoProvider implements AiProvider {
       confidence: 0.6,
       severity: "low",
       content: [
-        `## ${titleCase(text.length > 60 ? "Workspace analysis" : "Workspace analysis")}`,
+        `## Workspace analysis`,
         ``,
         `Here's the current state of your workspace:`,
         ``,

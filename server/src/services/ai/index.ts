@@ -12,8 +12,8 @@ async function buildContext(userId: string, projectId?: string | null): Promise<
   });
 
   const now = Date.now();
-  const today = new Date(now);
-  const horizon = new Date(now + 2 * 24 * 60 * 60 * 1000);
+  const today = new Date(new Date(now).setHours(0, 0, 0, 0));
+  const horizon = new Date(today.getTime() + 3 * 24 * 60 * 60 * 1000);
   const thirtyDaysAgo = new Date(now - 30 * 24 * 60 * 60 * 1000);
 
   const tasksDueSoon = await prisma.task.findMany({
@@ -97,8 +97,17 @@ async function buildContext(userId: string, projectId?: string | null): Promise<
 export async function askAi(request: AiRequest): Promise<AiResponse> {
   const context = await buildContext(request.userId, request.projectId);
 
-  const provider = providers.find((p) => p.isAvailable()) ?? providers[providers.length - 1]!;
-  return provider.ask(request, context);
+  const configured = providers.find((p) => p.isAvailable());
+  const demo = providers[providers.length - 1]!;
+
+  try {
+    return await (configured ?? demo).ask(request, context);
+  } catch (err) {
+    // Never fail the request because a paid/external provider hiccuped; the
+    // data-driven demo engine still answers from real workspace context.
+    if (configured === demo) throw err;
+    return demo.ask(request, context);
+  }
 }
 
 export { providers, buildContext };
