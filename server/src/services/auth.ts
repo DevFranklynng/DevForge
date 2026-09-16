@@ -1,9 +1,11 @@
 import type { CookieOptions, Response } from "express";
+import { randomBytes } from "node:crypto";
 import env from "../config/env.js";
 import { prisma } from "../lib/prisma.js";
 import { createSessionToken } from "../lib/session.js";
 import { ConflictError, UnauthorizedError } from "../utils/http.js";
 import { hashPassword, verifyPassword } from "../utils/password.js";
+import type { GoogleProfile } from "./google.js";
 
 export interface RegisteredUser {
   user: Awaited<ReturnType<typeof prisma.user.findUnique>>;
@@ -48,7 +50,7 @@ async function issueSession(res: Response, userId: string, req: unknown) {
 
   const cookieOptions: CookieOptions = {
     httpOnly: true,
-    sameSite: "lax",
+    sameSite: env.cookieSameSite,
     secure: env.cookieSecure,
     maxAge: ttlDays * 24 * 60 * 60 * 1000,
     path: "/",
@@ -107,6 +109,58 @@ export async function logoutUser(res: Response, tokenHash?: string) {
     await prisma.session.delete({ where: { tokenHash } }).catch(() => undefined);
   }
   res.clearCookie(env.cookieName, { path: "/" });
+}
+
+/**
+ * Signs a user in with a verified Google profile: existing Google identity is
+ * used as-is, a verified email matching an existing account links that account
+ * to Google, and anything else creates a new account with an unguessable
+ * password (so the account can later be secured with a password too).
+ */
+export async function loginOrLinkGoogle(
+  res: Response,
+  profile: GoogleProfile,
+  req: unknown,
+) {
+  const byGoogle = await prisma.user.findUnique({
+    where: { googleId: profile.sub },
+    include: userInclude,
+  });
+  if (byGoogle) {
+    await issueSession(res, byGoogle.id, req);
+    return safeUser(byGoogle);
+  }
+
+  const byEmail = await prisma.user.findUnique({
+    where: { email: profile.email },
+    include: userInclude,
+  });
+  if (byEmail) {
+    const user = await prisma.user.update({
+      where: { id: byEmail.id },
+      data: {
+        googleId: profile.sub,
+        avatarUrl: byEmail.avatarUrl ?? profile.picture,
+      },
+      include: userInclude,
+    });
+    await issueSession(res, user.id, req);
+    return safeUser(user);
+  }
+
+  const user = await prisma.user.create({
+    data: {
+      name: profile.name,
+      email: profile.email,
+      googleId: profile.sub,
+      avatarUrl: profile.picture,
+      password: randomBytes(32).toString("hex"),
+      settings: { create: {} },
+    },
+    include: userInclude,
+  });
+  await issueSession(res, user.id, req);
+  return safeUser(user);
 }
 
 export { safeUser, issueSession };

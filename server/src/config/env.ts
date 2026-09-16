@@ -27,10 +27,15 @@ function readBool(name: string, fallback: boolean): boolean {
   return value.toLowerCase() === "true" || value === "1";
 }
 
+function readSameSite(name: string, fallback: "lax" | "none" | "strict"): "lax" | "none" | "strict" {
+  const value = read(name, fallback).toLowerCase() as "lax" | "none" | "strict";
+  return value === "lax" || value === "none" || value === "strict" ? value : fallback;
+}
+
 const isProd = process.env.NODE_ENV === "production";
 
 const clientOrigin = read("CLIENT_ORIGIN", "http://localhost:5173");
-
+const cookieSecure = readBool("COOKIE_SECURE", false);
 const sessionSecret = read("SESSION_SECRET", "");
 if (!sessionSecret && !isProd) {
   const generated = randomBytes(32).toString("hex");
@@ -46,7 +51,8 @@ const env = {
   databaseUrl: read("DATABASE_URL", "file:./devforge.db"),
   sessionSecret: sessionSecret || process.env.DEVFORGE_EPHEMERAL_SECRET!,
   sessionTtlDays: Number(read("SESSION_TTL_DAYS", "30")),
-  cookieSecure: readBool("COOKIE_SECURE", false),
+  cookieSecure,
+  cookieSameSite: readSameSite("COOKIE_SAME_SITE", cookieSecure ? "none" : "lax"),
   cookieName: "df_session",
   demoMode: readBool("DEMO_MODE", true),
   githubToken: read("GITHUB_TOKEN", ""),
@@ -54,6 +60,10 @@ const env = {
   githubClientSecret: read("GITHUB_CLIENT_SECRET", ""),
   githubRedirectUri: read("GITHUB_REDIRECT_URI", "http://localhost:4000/api/github/callback"),
   githubAppOrigin: read("GITHUB_APP_ORIGIN", clientOrigin),
+  googleClientId: read("GOOGLE_CLIENT_ID", ""),
+  googleClientSecret: read("GOOGLE_CLIENT_SECRET", ""),
+  googleRedirectUri: read("GOOGLE_REDIRECT_URI", "http://localhost:4000/api/auth/google/callback"),
+  googleAppOrigin: read("GOOGLE_APP_ORIGIN", clientOrigin),
   deployProvider: read("DEPLOY_PROVIDER", ""),
   aiProvider: read("AI_PROVIDER", ""),
   openaiApiKey: read("OPENAI_API_KEY", ""),

@@ -14,6 +14,8 @@ import * as dashboard from "../controllers/dashboard.controller.js";
 import * as search from "../controllers/search.controller.js";
 import * as ai from "../controllers/ai.controller.js";
 import * as github from "../controllers/github.controller.js";
+import * as googleAuth from "../controllers/google-auth.controller.js";
+import { subscribeLive } from "../services/events.js";
 
 const router = Router();
 
@@ -28,6 +30,9 @@ router.post(
 );
 router.post("/auth/login", validate({ body: auth.loginSchema }), auth.login);
 router.post("/auth/logout", requireAuth, auth.logout);
+router.get("/auth/google", googleAuth.authorize);
+// callback is intentionally public: Google redirects here straight from OAuth and the state nonce authenticates the browser.
+router.get("/auth/google/callback", googleAuth.callback);
 router.get("/auth/me", requireAuth, auth.me);
 router.get("/auth/sessions", requireAuth, auth.listSessions);
 router.delete("/auth/sessions/:id", requireAuth, auth.revokeSession);
@@ -91,5 +96,10 @@ router.get("/github/callback", github.callback);
 router.get("/github/status", requireAuth, github.status);
 router.get("/github/repos", requireAuth, github.repos);
 router.post("/github/disconnect", requireAuth, github.disconnect);
+
+// Server-Sent Events stream for live updates (any authenticated tab).
+router.get("/events", requireAuth, (req, res) => {
+  subscribeLive(req.userId!, res);
+});
 
 export default router;
