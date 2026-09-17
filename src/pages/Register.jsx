@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
 import { Input } from "@/components/ui/Input";
 
+export default Register;
 export function Register() {
   const { status, register } = useAuth();
   const navigate = useNavigate();

@@ -26,6 +26,7 @@ import { RepositoryFormModal } from "@/features/repositories/RepositoryFormModal
 import { fromNow } from "@/utils/format";
 import { initials } from "@/utils/format";
 
+export default GitHubPage;
 export function GitHubPage() {
   const [projectFilter, setProjectFilter] = useState("all");
   const [formOpen, setFormOpen] = useState(false);

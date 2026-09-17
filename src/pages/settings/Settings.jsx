@@ -36,6 +36,7 @@ function optionButton({ active, onClick, icon: Icon, label, sub }) {
   );
 }
 
+export default Settings;
 export function Settings() {
   const [searchParams, setSearchParams] = useSearchParams();
   const tab = searchParams.get("tab") || "profile";

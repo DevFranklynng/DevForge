@@ -24,6 +24,7 @@ const columnMeta = {
   done: { label: "Done", accent: "bg-success" },
 };
 
+export default Tasks;
 export function Tasks() {
   const { user } = useAuth();
   const toast = useToast();

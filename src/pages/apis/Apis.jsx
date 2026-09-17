@@ -32,6 +32,7 @@ function CopyButton({ value }) {
   );
 }
 
+export default Apis;
 export function Apis() {
   const [methodFilter, setMethodFilter] = useState("all");
   const [formOpen, setFormOpen] = useState(false);

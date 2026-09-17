@@ -25,6 +25,7 @@ const tabItems = [
   { value: "activity", label: "Activity" },
 ];
 
+export default ProjectDetail;
 export function ProjectDetail() {
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();

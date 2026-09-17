@@ -13,6 +13,7 @@ import { DeploymentFormModal } from "@/features/deployments/DeploymentFormModal"
 import { DEPLOYMENT_ENVIRONMENTS, DEPLOYMENT_STATUSES } from "@/lib/meta";
 import { titleCase, formatDateTime, durationLabel, shortHash } from "@/utils/format";
 
+export default Deployments;
 export function Deployments() {
   const [projectFilter, setProjectFilter] = useState("all");
   const [envFilter, setEnvFilter] = useState("all");

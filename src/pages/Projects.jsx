@@ -18,6 +18,7 @@ import { PROJECT_STATUSES, PROJECT_PRIORITIES } from "@/lib/meta";
 import { titleCase, formatDate } from "@/utils/format";
 import { useDebounce } from "@/hooks/useDebounce";
 
+export default Projects;
 export function Projects() {
   const [q, setQ] = useState("");
   const [status, setStatus] = useState("all");

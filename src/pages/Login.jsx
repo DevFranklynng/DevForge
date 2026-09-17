@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
 import { Input } from "@/components/ui/Input";
 
+export default Login;
 export function Login() {
   const { status, login } = useAuth();
   const toast = useToast();

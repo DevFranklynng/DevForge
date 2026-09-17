@@ -26,6 +26,7 @@ const severityTone = {
   high: "danger",
 };
 
+export default Ai;
 export function Ai() {
   const { user } = useAuth();
   const [messages, setMessages] = useState([]);

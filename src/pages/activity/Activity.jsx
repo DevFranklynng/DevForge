@@ -12,6 +12,7 @@ import { dayLabel } from "@/utils/format";
 
 const PAGE = 30;
 
+export default Activity;
 export function Activity() {
   const [typeFilter, setTypeFilter] = useState("all");
   const [projectFilter, setProjectFilter] = useState("all");

@@ -42,6 +42,7 @@ function ProjectMiniCard({ project }) {
   );
 }
 
+export default Dashboard;
 export function Dashboard() {
   const { user } = useAuth();
   const { data, isLoading, isError, error, refetch } = useQuery({

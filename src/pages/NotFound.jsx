@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
+export default NotFound;
 export function NotFound() {
   useDocumentTitle("Page not found");
   return (

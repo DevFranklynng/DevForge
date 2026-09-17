@@ -28,6 +28,7 @@ const features = [
 
 const stacks = ["React", "Tailwind", "Express", "Prisma", "SQLite", "SSE"];
 
+export default Landing;
 export function Landing() {
   const { user } = useAuth();
   useDocumentTitle("Your developer command center");
