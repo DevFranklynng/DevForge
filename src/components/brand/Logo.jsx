@@ -1,6 +1,6 @@
 import { Hammer } from "lucide-react";
 import { Link } from "react-router-dom";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 
 /**
  * Product wordmark: anvil mark in a black tile with a gold hammer and the

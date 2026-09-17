@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { Hammer } from "lucide-react";
+import { Logo } from "@/components/brand/Logo";
 import { useAuth } from "@/features/auth/auth-context";
 import { GoogleButton } from "@/features/auth/GoogleButton";
 import { useToast } from "@/components/ui/Toast";
@@ -60,16 +60,14 @@ export function Login() {
   return (
     <div className="w-full max-w-sm">
       <div className="mb-6 flex items-center gap-2.5">
-        <div className="flex h-9 w-9 items-center justify-center rounded-md border border-edge-strong bg-surface-2">
-          <Hammer className="h-4 w-4 text-accent" aria-hidden />
-        </div>
+        <Logo size="md" compact />
         <div>
           <p className="text-sm font-semibold tracking-tight">Sign in to DevForge</p>
           <p className="text-xs text-ink-muted">Welcome back</p>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4 rounded-lg border border-edge bg-surface p-5">
+      <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border border-edge bg-surface p-5 shadow-[0_24px_60px_-30px_rgba(0,0,0,0.8)]">
         <Field label="Email" htmlFor="login-email">
           <Input
             id="login-email"
