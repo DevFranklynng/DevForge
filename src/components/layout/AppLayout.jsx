@@ -3,6 +3,7 @@ import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Topbar } from "@/components/layout/Topbar";
 import { CommandPalette } from "@/components/layout/CommandPalette";
+import { NetworkBanner } from "@/components/layout/NetworkBanner";
 import { useAuth } from "@/features/auth/auth-context";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useHotkey } from "@/hooks/useHotkey";
@@ -50,6 +51,7 @@ export function AppLayout() {
         />
         <div className="flex min-w-0 flex-1 flex-col">
           <Topbar onMenuClick={() => setMobileOpen(true)} onOpenSearch={() => setSearchOpen(true)} />
+          <NetworkBanner />
           <main className="flex-1 overflow-x-hidden">
             <Outlet />
           </main>

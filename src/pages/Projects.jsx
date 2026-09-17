@@ -11,6 +11,7 @@ import { Select } from "@/components/ui/Select";
 import { Badge, ProjectStatusBadge, PriorityBadge } from "@/components/ui/Badge";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { SkeletonGrid } from "@/components/ui/Skeleton";
 import { ConfirmDialog } from "@/components/ui/Modal";
 import { ProjectFormModal } from "@/features/projects/ProjectFormModal";
 import { PROJECT_STATUSES, PROJECT_PRIORITIES } from "@/lib/meta";
@@ -96,7 +97,7 @@ export function Projects() {
       )}
 
       {!isError && isLoading && (
-        <p className="mt-6 text-center text-xs text-ink-muted">Loading projects…</p>
+        <SkeletonGrid cards={6} className="mt-6" />
       )}
 
       {!isError && !isLoading && projects.length === 0 && (

@@ -16,7 +16,7 @@ import { Card, CardHeader } from "@/components/ui/Card";
 import { ProjectStatusBadge, PriorityBadge, DeploymentStatusBadge } from "@/components/ui/Badge";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { Spinner } from "@/components/ui/Spinner";
+import { SkeletonGrid, SkeletonRow } from "@/components/ui/Skeleton";
 import { greetingForHour, fromNow, formatDate, dayLabel, durationLabel, shortHash, todayString } from "@/utils/format";
 
 function ProjectMiniCard({ project }) {
@@ -105,7 +105,7 @@ export function Dashboard() {
                 View all <ArrowRight className="h-3 w-3" aria-hidden />
               </Link>
             </div>
-            {loading && <Spinner label="Loading projects" />}
+            {loading && <SkeletonGrid cards={3} className="mb-3" />}
             {!loading && data?.activeProjects?.length === 0 && (
               <EmptyState title="No projects yet" description="Create your first project to get started." />
             )}
@@ -118,7 +118,7 @@ export function Dashboard() {
             <section>
               <CardHeader title="Focus — coming due" subtitle="Highest priority tasks with due dates" />
               <Card className="lg:border-t-0">
-                {loading && <Spinner label="Loading focus tasks" />}
+                {loading && <SkeletonRow lines={3} className="p-5" />}
                 {!loading && data?.focusTasks?.length === 0 && (
                   <p className="py-6 text-center text-xs text-ink-muted">Nothing due. Enjoy the calm.</p>
                 )}
@@ -145,7 +145,7 @@ export function Dashboard() {
             <section>
               <CardHeader title="Recent deployments" subtitle="Latest across all environments" />
               <Card className="lg:border-t-0">
-                {loading && <Spinner label="Loading deployments" />}
+                {loading && <SkeletonRow lines={3} className="p-5" />}
                 {!loading && data?.deployments?.length === 0 && (
                   <p className="py-6 text-center text-xs text-ink-muted">No deployments yet.</p>
                 )}
@@ -176,7 +176,7 @@ export function Dashboard() {
                 View all <ArrowRight className="h-3 w-3" aria-hidden />
               </Link>
             </div>
-            {loading && <Spinner label="Loading activity" />}
+            {loading && <SkeletonRow lines={4} className="mb-3" />}
             {!loading && data?.recentActivity?.length === 0 && (
               <EmptyState icon={ActivityIcon} title="No activity yet" description="Your workspace timeline will appear here." />
             )}
