@@ -7,7 +7,7 @@ A professional developer command center for projects, tasks, repositories, deplo
 ## Stack
 
 - **Frontend**: React 18, React Router 6, TanStack Query, Tailwind CSS (custom theme tokens), Lucide icons — plain JavaScript (`.jsx`).
-- **Build**: Vite. Deployed to a static host (Netlify) — `public/_redirects` + `netlify.toml` provide the SPA fallback.
+- **Build**: Vite. Deployed to Vercel (`vercel.json` provides the SPA fallback); a `netlify.toml` + `public/_redirects` fallback is kept for Netlify.
 
 ## Features
 
@@ -38,6 +38,8 @@ npm install
 npm run dev
 ```
 
+> API contract: the integration guide and full endpoint reference live in **DevForge-Api/`docs/API.md`** (routes, bodies, response shapes, auth/cookie flow, error format). Production API origin is `https://devforge-api.vercel.app`.
+
 ## Scripts
 
 | Script | What it does |
@@ -48,8 +50,11 @@ npm run dev
 
 ## Deployment
 
-- **Client** — `npm run build:client`, publish `dist/`. `netlify.toml` + `public/_redirects` handle the SPA fallback on Netlify. Set `VITE_API_URL` (in `netlify.toml` or the Netlify dashboard env vars) to the deployed API, e.g. `https://devforge-api.onrender.com`.
-- **API** — deployed separately from the **DevForge-Api** repo (Render blueprint / Docker), where `CLIENT_ORIGIN`, `COOKIE_SECURE=true`, `COOKIE_SAME_SITE=none`, the OAuth URIs, `VITE_API_URL` counterpart and the callback registration in the Google/GitHub consoles all live.
+- **Client — Vercel (primary).** `vercel.json` already sets the build-time `VITE_API_URL` to the deployed API and provides the SPA rewrite (`/((?!favicon\\.svg|og\\.svg|assets/).*) → /index.html`). Push the repo; Vercel auto-detects the Vite app (build `npm run build:client`, output `dist/`). Canonical/OG/Twitter/JSON-LD URLs are pinned to whatever origin serves the app at runtime, so no domain edits are needed. Netlify remains usable as a fallback (`netlify.toml` + `public/_redirects`).
+- **API — Vercel too** (separate **DevForge-Api** repo). Per `docs/API.md`:
+  - `VITE_API_URL=https://devforge-api.vercel.app` is the client counterpart;
+  - the API needs `CLIENT_ORIGIN` = your exact client origin (e.g. `https://devforge.vercel.app`), `COOKIE_SECURE=true`, `COOKIE_SAME_SITE=none`, `SESSION_SECRET` held constant, and a reachable `DATABASE_URL` — a `file:`-style SQLite URL won't work on Vercel, use Postgres (e.g. Neon/Vercel Postgres);
+  - register the Google/GitHub OAuth callback URIs toward `https://devforge-api.vercel.app/api/.../callback`.
 
 ## Project layout
 
@@ -60,8 +65,9 @@ npm run dev
 │  ├─ features/          # auth, theme, notifications, project tabs, CRUD modals
 │  ├─ pages/             # route components
 │  ├─ hooks/ lib/ utils/ services/
-├─ public/               # static assets + _redirects (SPA fallback)
-├─ netlify.toml          # Netlify build/publish config
+├─ public/               # static assets + _redirects (Netlify SPA fallback)
+├─ vercel.json           # Vercel env + SPA rewrites (primary host)
+├─ netlify.toml          # Netlify build/publish config (fallback)
 └─ index.html
 ```
 

@@ -1,7 +1,8 @@
-import { lazy, Suspense } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { lazy, Suspense, useEffect } from "react";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { AuthLayout } from "@/components/layout/AuthLayout";
+import { syncSeoUrls } from "@/lib/seo";
 
 const Landing = lazy(() => import("@/pages/Landing"));
 const Login = lazy(() => import("@/pages/Login"));
@@ -31,9 +32,20 @@ function PageFallback() {
   );
 }
 
+/** Pins canonical/OG/Twitter/JSON-LD URLs to the current origin on navigation. */
+function SeoManager() {
+  const location = useLocation();
+  useEffect(() => {
+    syncSeoUrls();
+  }, [location.pathname]);
+  return null;
+}
+
 export function App() {
   return (
-    <Routes>
+    <>
+      <SeoManager />
+      <Routes>
       <Route
         path="/"
         element={
@@ -70,6 +82,7 @@ export function App() {
         }
       />
       <Route path="*" element={<Navigate to="/404" replace />} />
-    </Routes>
+      </Routes>
+    </>
   );
 }

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "env": {
+    "VITE_API_URL": "https://devforge-api.vercel.app"
+  },
+  "rewrites": [
+    {
+      "source": "/((?!favicon\\.svg|og\\.svg|assets/).*)",
+      "destination": "/index.html"
+    }
+  ]
+}

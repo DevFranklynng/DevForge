@@ -1,16 +1,18 @@
 # Netlify deployment for the DevForge client (static build only).
-# The API runs separately from the DevForge-Api repo and is reachable through
-# VITE_API_URL, injected at build time. SPA routing is handled by _redirects.
+# Primary host is Vercel (see vercel.json); this keeps Netlify usable as a
+# fallback. The API runs separately from the DevForge-Api repo and is reached
+# through VITE_API_URL, injected at build time. SPA routing is handled by
+# public/_redirects.
 [build]
   command = "npm run build:client"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "20"
-  # The deployed API origin. If your Render URL differs (or was set in the
-  # Netlify dashboard under Site settings > Environment variables, which
-  # overrides this file), update it here to match.
-  VITE_API_URL = "https://devforge-api.onrender.com"
+  # The deployed API origin (per docs/API.md in DevForge-Api). If the Vercel
+  # deployment URL differs (or the value was set in the dashboard under Site
+  # settings > Environment variables, which overrides this file), update it here.
+  VITE_API_URL = "https://devforge-api.vercel.app"
 
 # No external/hosted API proxying: Netlify 200-rewrites cannot proxy to
 # external origins, so the client talks to the API origin directly.
