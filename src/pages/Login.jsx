@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Logo } from "@/components/brand/Logo";
 import { useAuth } from "@/features/auth/auth-context";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { GoogleButton } from "@/features/auth/GoogleButton";
 import { useToast } from "@/components/ui/Toast";
 import { Button } from "@/components/ui/Button";
@@ -15,6 +16,8 @@ export function Login() {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const from = location.state?.from?.pathname || "/dashboard";
+
+  useDocumentTitle("Sign in");
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");

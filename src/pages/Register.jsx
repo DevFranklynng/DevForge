@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Logo } from "@/components/brand/Logo";
 import { useAuth } from "@/features/auth/auth-context";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { GoogleButton } from "@/features/auth/GoogleButton";
 import { Button } from "@/components/ui/Button";
 import { Field } from "@/components/ui/Field";
@@ -10,6 +11,8 @@ import { Input } from "@/components/ui/Input";
 export function Register() {
   const { status, register } = useAuth();
   const navigate = useNavigate();
+
+  useDocumentTitle("Create workspace");
 
   const [form, setForm] = useState({ name: "", email: "", password: "", confirm: "" });
   const [error, setError] = useState("");

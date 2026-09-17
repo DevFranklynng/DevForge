@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="DevForge — a professional developer command center">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="22%" r="55%">
+      <stop offset="0%" stop-color="#d6b23c" stop-opacity="0.28" />
+      <stop offset="100%" stop-color="#d6b23c" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="goldtext" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#d6b23c" />
+      <stop offset="50%" stop-color="#f2d878" />
+      <stop offset="100%" stop-color="#d6b23c" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="#0a0908" />
+  <rect width="1200" height="630" fill="url(#glow)" />
+
+  <g transform="translate(600 320)">
+    <rect x="-58" y="-58" width="116" height="116" rx="28" fill="#16130c" stroke="#d6b23c" stroke-opacity="0.5" />
+    <g transform="translate(-13 -12) scale(4)" fill="none" stroke="#d6b23c" stroke-width="0.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m15 12-8.373 8.373a1 1 0 1 1-3-3L12 9" />
+      <path d="m18 15 4-4" />
+      <path d="m21.5 11.5-1.914-1.914A2 2 0 0 1 19 8.172V7l-2.26-2.26a6 6 0 0 0-4.202-1.756L9 2.96l.92.82A6.18 6.18 0 0 1 12 8.4V10l2 2h1.172a2 2 0 0 1 1.414.586L18.5 14.5" />
+    </g>
+  </g>
+
+  <text x="600" y="420" text-anchor="middle" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="44" font-weight="700" letter-spacing="-1">
+    <tspan fill="#f4efe3">Dev</tspan><tspan fill="url(#goldtext)">Forge</tspan>
+  </text>
+
+  <text x="600" y="470" text-anchor="middle" font-family="Inter, 'Segoe UI', system-ui, sans-serif" font-size="22" fill="#b6af9d">
+    A professional developer command center
+  </text>
+
+  <text x="600" y="570" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="15" letter-spacing="8" fill="#7f796b">
+    PLAN · SHIP · MONITOR
+  </text>
+</svg>

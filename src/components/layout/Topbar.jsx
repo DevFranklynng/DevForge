@@ -4,30 +4,11 @@ import { NotificationsPanel } from "./NotificationsPanel";
 import { UserMenu } from "./UserMenu";
 import { ThemeToggle } from "./ThemeToggle";
 import { Kbd } from "@/components/ui/Kbd";
-
-const titles = [
-  { re: /^\/dashboard/, label: "Dashboard" },
-  { re: /^\/projects\/([^/]+)\/([^/]+)/, label: "Project" },
-  { re: /^\/projects\/([^/]+)/, label: "Project" },
-  { re: /^\/projects/, label: "Projects" },
-  { re: /^\/tasks/, label: "Tasks" },
-  { re: /^\/deployments/, label: "Deployments" },
-  { re: /^\/github/, label: "Repositories" },
-  { re: /^\/apis/, label: "APIs" },
-  { re: /^\/activity/, label: "Activity" },
-  { re: /^\/ai/, label: "DevForge AI" },
-  { re: /^\/settings/, label: "Settings" },
-  { re: /^\/$/, label: "Welcome" },
-];
-
-function resolveTitle(path) {
-  const match = titles.find((t) => t.re.test(path));
-  return match ? match.label : "DevForge";
-}
+import { resolvePageTitle } from "@/lib/page-titles";
 
 export function Topbar({ onMenuClick, onOpenSearch }) {
   const location = useLocation();
-  const title = resolveTitle(location.pathname);
+  const title = resolvePageTitle(location.pathname);
 
   return (
     <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center gap-3 border-b border-edge bg-surface/85 px-4 backdrop-blur-sm">

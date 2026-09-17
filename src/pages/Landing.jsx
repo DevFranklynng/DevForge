@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
 import { useAuth } from "@/features/auth/auth-context";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 const features = [
   { icon: FolderKanban, title: "Project command", text: "Track every project's status, priority, and progress from one place, with task-derived completion metrics." },
@@ -29,6 +30,7 @@ const stacks = ["React", "Tailwind", "Express", "Prisma", "SQLite", "SSE"];
 
 export function Landing() {
   const { user } = useAuth();
+  useDocumentTitle("Your developer command center");
 
   return (
     <div className="min-h-screen bg-canvas text-ink">

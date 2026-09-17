@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
 export function NotFound() {
+  useDocumentTitle("Page not found");
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-canvas px-4 text-center text-ink">
       <div

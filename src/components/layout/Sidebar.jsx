@@ -10,9 +10,9 @@ import {
   Settings,
   Sparkles,
   X,
-  Hammer,
 } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { Logo as BrandLogo } from "@/components/brand/Logo";
 import { useAuth } from "@/features/auth/auth-context";
 
 const navigation = [
@@ -33,9 +33,7 @@ const footerNavigation = [
 function Logo({ collapsed }) {
   return (
     <div className="flex items-center gap-2.5 px-3">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-edge-strong bg-surface-2">
-        <Hammer className="h-4 w-4 text-accent" aria-hidden />
-      </div>
+      <BrandLogo size="sm" compact className="shrink-0" />
       {!collapsed && (
         <div className="leading-tight">
           <p className="text-sm font-semibold tracking-tight text-ink">DevForge</p>

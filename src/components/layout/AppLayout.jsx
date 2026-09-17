@@ -4,9 +4,11 @@ import { Sidebar } from "@/components/layout/Sidebar";
 import { Topbar } from "@/components/layout/Topbar";
 import { CommandPalette } from "@/components/layout/CommandPalette";
 import { useAuth } from "@/features/auth/auth-context";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useHotkey } from "@/hooks/useHotkey";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { useLiveSync } from "@/hooks/useLiveSync";
+import { resolvePageTitle } from "@/lib/page-titles";
 
 export function AppLayout() {
   const { status } = useAuth();
@@ -19,6 +21,7 @@ export function AppLayout() {
   const [hoverExpanded, setHoverExpanded] = useState(false);
 
   useLiveSync();
+  useDocumentTitle(resolvePageTitle(location.pathname));
 
   const collapsed = isTablet && !(isDesktop && hoverExpanded);
 
