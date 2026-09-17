@@ -64,7 +64,7 @@ export function Dashboard() {
         </div>
         <Link
           to="/projects"
-          className="inline-flex h-9 items-center gap-2 rounded-md bg-accent-strong px-4 text-sm font-medium text-white transition-colors hover:bg-accent/90"
+          className="inline-flex h-9 items-center gap-2 rounded-md bg-accent-strong px-4 text-sm font-medium text-accent-contrast transition-colors hover:bg-accent/90"
         >
           New workspace views
           <ArrowRight className="h-4 w-4" aria-hidden />

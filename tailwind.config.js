@@ -23,6 +23,7 @@ export default {
         accent: withOpacity("--accent"),
         "accent-strong": withOpacity("--accent-strong"),
         "accent-soft": withOpacity("--accent-soft"),
+        "accent-contrast": withOpacity("--accent-contrast"),
         success: withOpacity("--success"),
         "success-soft": withOpacity("--success-soft"),
         warning: withOpacity("--warning"),

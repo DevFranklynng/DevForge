@@ -10,43 +10,47 @@
 @tailwind utilities;
 
 @layer base {
+  /* Black + gold identity. Warm near-blacks for the base, metallic gold for
+     the accent, near-black ink on gold for buttons. */
   :root {
-    --canvas: 13 11 9;
-    --surface: 21 18 14;
-    --surface-2: 29 25 19;
-    --surface-3: 39 33 26;
-    --edge: 47 40 31;
-    --edge-strong: 68 58 45;
-    --ink: 242 236 224;
-    --ink-secondary: 186 174 154;
-    --ink-muted: 128 118 101;
-    --accent: 199 131 54;
-    --accent-strong: 150 92 30;
-    --accent-soft: 255 216 166;
+    --canvas: 9 8 6;
+    --surface: 17 16 13;
+    --surface-2: 25 23 19;
+    --surface-3: 34 32 27;
+    --edge: 44 41 34;
+    --edge-strong: 66 62 51;
+    --ink: 244 239 227;
+    --ink-secondary: 182 175 157;
+    --ink-muted: 127 121 107;
+    --accent: 214 178 60;
+    --accent-strong: 176 143 39;
+    --accent-soft: 254 246 212;
+    --accent-contrast: 12 10 6;
     --success: 121 178 133;
-    --success-soft: 46 78 56;
-    --warning: 235 172 64;
-    --warning-soft: 95 69 20;
-    --danger: 236 122 116;
-    --danger-soft: 92 42 44;
+    --success-soft: 43 75 52;
+    --warning: 224 168 62;
+    --warning-soft: 82 62 19;
+    --danger: 233 121 111;
+    --danger-soft: 84 41 43;
     --info: 123 172 224;
-    --info-soft: 24 57 83;
+    --info-soft: 24 56 82;
     color-scheme: dark;
   }
 
   .light {
-    --canvas: 248 245 239;
-    --surface: 255 253 249;
-    --surface-2: 249 245 238;
-    --surface-3: 242 237 228;
-    --edge: 226 218 205;
-    --edge-strong: 199 188 169;
-    --ink: 29 24 18;
-    --ink-secondary: 88 78 63;
-    --ink-muted: 141 129 111;
-    --accent: 155 92 24;
-    --accent-strong: 126 68 14;
-    --accent-soft: 249 236 214;
+    --canvas: 250 248 243;
+    --surface: 255 255 255;
+    --surface-2: 247 244 237;
+    --surface-3: 241 237 227;
+    --edge: 225 219 205;
+    --edge-strong: 199 190 169;
+    --ink: 24 22 17;
+    --ink-secondary: 84 78 64;
+    --ink-muted: 141 134 117;
+    --accent: 172 137 32;
+    --accent-strong: 138 105 20;
+    --accent-soft: 250 244 221;
+    --accent-contrast: 255 253 248;
     --success: 52 110 74;
     --success-soft: 226 240 229;
     --warning: 156 93 8;

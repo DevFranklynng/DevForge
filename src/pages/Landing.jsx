@@ -41,7 +41,7 @@ export function Landing() {
             {user ? (
               <Link
                 to="/dashboard"
-                className="inline-flex h-9 items-center gap-2 rounded-md bg-accent-strong px-4 text-sm font-medium text-white transition-colors hover:bg-accent/90"
+                className="inline-flex h-9 items-center gap-2 rounded-md bg-accent-strong px-4 text-sm font-medium text-accent-contrast transition-colors hover:bg-accent/90"
               >
                 Open dashboard
                 <ArrowRight className="h-4 w-4" aria-hidden />
@@ -51,7 +51,7 @@ export function Landing() {
                 <Link to="/login" className="inline-flex h-9 items-center rounded-md px-4 text-sm font-medium text-ink-secondary transition-colors hover:bg-surface-2 hover:text-ink">
                   Sign in
                 </Link>
-                <Link to="/register" className="inline-flex h-9 items-center rounded-md bg-accent-strong px-4 text-sm font-medium text-white transition-colors hover:bg-accent/90">
+                <Link to="/register" className="inline-flex h-9 items-center rounded-md bg-accent-strong px-4 text-sm font-medium text-accent-contrast transition-colors hover:bg-accent/90">
                   Get started
                 </Link>
               </>
@@ -79,7 +79,7 @@ export function Landing() {
               {user ? (
                 <Link
                   to="/dashboard"
-                  className="inline-flex h-11 items-center gap-2 rounded-md bg-accent-strong px-6 text-sm font-medium text-white transition-colors hover:bg-accent/90"
+                  className="inline-flex h-11 items-center gap-2 rounded-md bg-accent-strong px-6 text-sm font-medium text-accent-contrast transition-colors hover:bg-accent/90"
                 >
                   Go to your workspace
                   <ArrowRight className="h-4 w-4" aria-hidden />
@@ -88,7 +88,7 @@ export function Landing() {
                 <>
                   <Link
                     to="/register"
-                    className="inline-flex h-11 items-center rounded-md bg-accent-strong px-6 text-sm font-medium text-white transition-colors hover:bg-accent/90"
+                    className="inline-flex h-11 items-center rounded-md bg-accent-strong px-6 text-sm font-medium text-accent-contrast transition-colors hover:bg-accent/90"
                   >
                     Create free account
                   </Link>
