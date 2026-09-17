@@ -1,25 +1,47 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { AuthLayout } from "@/components/layout/AuthLayout";
-import { Landing } from "@/pages/Landing";
-import { Login } from "@/pages/Login";
-import { Register } from "@/pages/Register";
-import { Dashboard } from "@/pages/Dashboard";
-import { Projects } from "@/pages/Projects";
-import { ProjectDetail } from "@/pages/projects/ProjectDetail";
-import { Tasks } from "@/pages/tasks/Tasks";
-import { Deployments } from "@/pages/deployments/Deployments";
-import { GitHubPage } from "@/pages/github/GitHubPage";
-import { Apis } from "@/pages/apis/Apis";
-import { Activity } from "@/pages/activity/Activity";
-import { Ai } from "@/pages/ai/Ai";
-import { Settings } from "@/pages/settings/Settings";
-import { NotFound } from "@/pages/NotFound";
+
+const Landing = lazy(() => import("@/pages/Landing"));
+const Login = lazy(() => import("@/pages/Login"));
+const Register = lazy(() => import("@/pages/Register"));
+const Dashboard = lazy(() => import("@/pages/Dashboard"));
+const Projects = lazy(() => import("@/pages/Projects"));
+const ProjectDetail = lazy(() => import("@/pages/projects/ProjectDetail"));
+const Tasks = lazy(() => import("@/pages/tasks/Tasks"));
+const Deployments = lazy(() => import("@/pages/deployments/Deployments"));
+const GitHubPage = lazy(() => import("@/pages/github/GitHubPage"));
+const Apis = lazy(() => import("@/pages/apis/Apis"));
+const Activity = lazy(() => import("@/pages/activity/Activity"));
+const Ai = lazy(() => import("@/pages/ai/Ai"));
+const Settings = lazy(() => import("@/pages/settings/Settings"));
+const NotFound = lazy(() => import("@/pages/NotFound"));
+
+/** Fallback for top-level lazy pages that have no persistent shell behind them. */
+function PageFallback() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-canvas text-sm text-ink-secondary">
+      <span
+        role="status"
+        aria-label="Loading"
+        className="h-6 w-6 animate-spin rounded-full border-2 border-accent border-t-transparent"
+      />
+    </div>
+  );
+}
 
 export function App() {
   return (
     <Routes>
-      <Route path="/" element={<Landing />} />
+      <Route
+        path="/"
+        element={
+          <Suspense fallback={<PageFallback />}>
+            <Landing />
+          </Suspense>
+        }
+      />
 
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<Login />} />
@@ -39,7 +61,14 @@ export function App() {
         <Route path="/settings" element={<Settings />} />
       </Route>
 
-      <Route path="/404" element={<NotFound />} />
+      <Route
+        path="/404"
+        element={
+          <Suspense fallback={<PageFallback />}>
+            <NotFound />
+          </Suspense>
+        }
+      />
       <Route path="*" element={<Navigate to="/404" replace />} />
     </Routes>
   );

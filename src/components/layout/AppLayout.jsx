@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Topbar } from "@/components/layout/Topbar";
 import { CommandPalette } from "@/components/layout/CommandPalette";
 import { NetworkBanner } from "@/components/layout/NetworkBanner";
+import { LoadingState } from "@/components/ui/EmptyState";
 import { useAuth } from "@/features/auth/auth-context";
 import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 import { useHotkey } from "@/hooks/useHotkey";
@@ -53,7 +54,9 @@ export function AppLayout() {
           <Topbar onMenuClick={() => setMobileOpen(true)} onOpenSearch={() => setSearchOpen(true)} />
           <NetworkBanner />
           <main className="flex-1 overflow-x-hidden">
-            <Outlet />
+            <Suspense fallback={<LoadingState label="Loading workspace" className="m-6" />}>
+              <Outlet />
+            </Suspense>
           </main>
         </div>
         <CommandPalette open={searchOpen} onClose={() => setSearchOpen(false)} />

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { Logo } from "@/components/brand/Logo";
 import { useAuth } from "@/features/auth/auth-context";
@@ -35,7 +36,15 @@ export function AuthLayout() {
 
       <main className="relative flex flex-1 items-center justify-center px-4 py-10">
         <div className="w-full max-w-sm">
-          <Outlet />
+          <Suspense
+            fallback={
+              <div className="flex py-16 items-center justify-center text-sm text-ink-secondary" role="status" aria-label="Loading">
+                <span className="h-5 w-5 animate-spin rounded-full border-2 border-accent border-t-transparent" />
+              </div>
+            }
+          >
+            <Outlet />
+          </Suspense>
         </div>
       </main>
 
